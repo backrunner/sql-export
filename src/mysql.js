@@ -1,6 +1,6 @@
-export const sqlQuery = (sql) => {
+export const sqlQuery = (db, sql) => {
   return new Promise((resolve, reject) => {
-    this.query(sql, (err, results, field) => {
+    db.query(sql, (err, results, fields) => {
       if (err) {
         reject(err);
       }

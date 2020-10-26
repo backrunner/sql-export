@@ -1,25 +1,17 @@
 import mysql from 'mysql2';
-import logger from './logger';
 import config from '../config';
 
 const { user, pass, port, host, database } = config.mysql;
 
-const connection = mysql.createConnection({
+const connection = mysql.createPool({
   host,
   port,
   user,
   password: pass,
   database,
-});
-
-connection.connect((err) => {
-  if (err) {
-    const message = 'Cannot connect to database.';
-    logger.error(message);
-    logger.error(err);
-    throw message;
-  }
-  logger.info('Connected to the database.');
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0
 });
 
 const fn = async (ctx, next) => {

@@ -10,5 +10,5 @@ export default {
   schedule: {
     enable: true,
     cron: '* 3 * * *',
-  }
+  },
 }

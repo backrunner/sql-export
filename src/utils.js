@@ -1,6 +1,9 @@
 import fs from 'fs';
 import path from 'path';
+import moment from 'moment';
 import logger from './logger';
+
+const recentPath = path.resolve(__dirname, '../recent.json');
 
 export const requireDir = (dir) => {
   const files = fs.readdirSync(dir);
@@ -24,15 +27,49 @@ export const requireDir = (dir) => {
   return map;
 }
 
-export const jsonSuccess = (data, message = 'success') => {
+export const getRecent = (task) => {
+  return new Promise((resolve) => {
+    fs.readFile(recentPath, {
+      encoding: 'utf-8',
+    }, (err, data) => {
+      if (err) {
+        resolve(null);
+        return;
+      }
+      const recent = JSON.parse(data);
+      resolve(recent[task] || null);
+    })
+  });
+}
+
+export const writeRecent = (task, filename) => {
+  let recent = {};
+  if (fs.existsSync(recentPath)) {
+    const res = fs.readFileSync(recentPath, {
+      encoding: 'utf-8',
+    });
+    if (res) {
+      recent = JSON.parse(res);
+    }
+  }
+  if (!recent[task]) {
+    recent[task] = {};
+  }
+  recent[task].file = filename;
+  recent[task].time = moment().format('YYYY-MM-DD HH:mm:ss');
+  fs.writeFileSync(recentPath, JSON.stringify(recent), {
+    encoding: 'utf-8',
+  });
+}
+
+export const jsonSuccess = (data = null, message = 'success') => {
   return JSON.stringify({
     code: 200,
     success: true,
     message,
-    ...(data || null),
+    data,
   });
 }
-
 
 export const jsonError = (message = 'Unexpected error') => {
   return JSON.stringify({

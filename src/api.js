@@ -1,5 +1,5 @@
 import logger from './logger';
-import { jsonSuccess, jsonError } from './utils';
+import { jsonSuccess, jsonError, getRecent } from './utils';
 
 const build = (router) => {
   router.get('/doTask', async (ctx, next) => {
@@ -19,13 +19,25 @@ const build = (router) => {
     logger.info(`Manually trigger task [${ctx.query.task}]`);
 
     try {
-      await ctx.tasks[ctx.query.task].call(null, ctx);
+      const ret = await ctx.tasks[ctx.query.task].call(null, ctx);
+      ctx.body = jsonSuccess(ret);
+      logger.info(`Task [${ctx.query.task} completed.]`);
     } catch (err) {
+      logger.error(`Task [${ctx.query.task}] was going wrong.`);
+      logger.error(err);
       ctx.body = jsonError(err);
       return await next();
     }
 
-    ctx.body = jsonSuccess();
+    await next();
+  });
+  router.get('/getRecent', async (ctx, next) => {
+    if (!ctx.query.task) {
+      ctx.body = jsonError('Cannot get param [task] from query.');
+      return await next();
+    }
+    const recent = await getRecent(ctx.query.task);
+    ctx.body = jsonSuccess(recent);
     await next();
   });
 }

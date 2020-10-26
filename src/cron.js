@@ -1,32 +1,22 @@
 import cron from 'node-cron';
 import config from '../config';
 import logger from './logger';
+import mysql from './db';
+import loader from './loader';
 
-const { cron: cronStr } = config;
+const { cron: cronStr } = config.schedule;
 
-let job;
+const ctx = {};
 
-const fn = async (ctx, next) => {
-  if (!ctx.tasks) {
-    logger.warn('Cannot get any task for cron job.');
-    return await next();
-  }
+mysql(ctx, () => {});
+loader(ctx, () => {});
 
-  if (!job) {
-    job = cron.schedule(cronStr, () => {
-      Object.keys(ctx.tasks).forEach((key) => {
-        if (typeof ctx.tasks[key] !== 'function') {
-          return;
-        }
-        logger.info(`[Task] task ${key} starting...`);
-        ctx.tasks[key].call(null, ctx);
-      });
-    }, null, true, 'Asia/Shanghai');
-  }
-
-  ctx.scheduled = job;
-
-  await next();
-}
-
-export default fn;
+cron.schedule(cronStr, () => {
+  Object.keys(ctx.tasks).forEach((key) => {
+    if (typeof ctx.tasks[key] !== 'function') {
+      return;
+    }
+    logger.info(`[Task] task ${key} starting...`);
+    ctx.tasks[key].call(null, ctx);
+  });
+}, null, true, 'Asia/Shanghai');
