@@ -19,7 +19,7 @@ const build = (router) => {
     logger.info(`Manually trigger task [${ctx.query.task}]`);
 
     try {
-      const ret = await ctx.tasks[ctx.query.task].call(null, ctx);
+      const ret = await ctx.tasks[ctx.query.task].doExport.call(null, ctx);
       ctx.body = jsonSuccess(ret);
       logger.info(`Task [${ctx.query.task} completed.]`);
     } catch (err) {
@@ -37,7 +37,7 @@ const build = (router) => {
       ctx.body = jsonError('Cannot get param [task] from query.');
       return await next();
     }
-    const recent = await getRecent(ctx.query.task);
+    const recent = await getRecent(ctx.query.task, ctx.query.sheet);
     ctx.body = jsonSuccess(recent);
     logger.debug(`getRecent has returned [${JSON.stringify(ctx.body)}].`);
     await next();

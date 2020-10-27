@@ -9,7 +9,7 @@ export default {
   },
   schedule: {
     enable: true,
-    cron: '* 0 * * *',
+    cron: '*/20 * * * * *',
   },
   localOnly: true,
 }

@@ -27,7 +27,7 @@ export const requireDir = (dir) => {
   return map;
 }
 
-export const getRecent = (task) => {
+export const getRecent = (task, sheet) => {
   return new Promise((resolve) => {
     fs.readFile(recentPath, {
       encoding: 'utf-8',
@@ -37,12 +37,12 @@ export const getRecent = (task) => {
         return;
       }
       const recent = JSON.parse(data);
-      resolve(recent[task] || null);
+      resolve(recent[task][sheet || 'default'] || null);
     })
   });
 }
 
-export const writeRecent = (task, filename) => {
+export const writeRecent = (task, sheet, filename) => {
   let recent = {};
   if (fs.existsSync(recentPath)) {
     const res = fs.readFileSync(recentPath, {
@@ -55,8 +55,14 @@ export const writeRecent = (task, filename) => {
   if (!recent[task]) {
     recent[task] = {};
   }
-  recent[task].file = filename;
-  recent[task].time = moment().format('YYYY-MM-DD HH:mm:ss');
+  if (!sheet) {
+    sheet = 'default';
+  }
+  if (!recent[task][sheet]) {
+    recent[task][sheet] = {};
+  }
+  recent[task][sheet].file = filename;
+  recent[task][sheet].time = moment().format('YYYY-MM-DD HH:mm:ss');
   fs.writeFileSync(recentPath, JSON.stringify(recent), {
     encoding: 'utf-8',
   });
