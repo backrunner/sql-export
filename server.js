@@ -8,9 +8,11 @@ import logger from './src/logger';
 import requestFilter from './src/requestFilter';
 import buildApi from './src/api';
 
+const outputPath = config.output || './output';
+
 // directory test
-if (!fs.existsSync('./output')) {
-  fs.mkdirSync('./output');
+if (!fs.existsSync(outputPath)) {
+  fs.mkdirSync(outputPath);
 }
 
 // init cron
