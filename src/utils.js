@@ -62,6 +62,13 @@ export const writeRecent = (task, filename) => {
   });
 }
 
+export const getUserIp = (ctx) => {
+  const { req } = ctx;
+  return req.connection.remoteAddress ||
+    req.socket.remoteAddress ||
+    req.connection.socket.remoteAddress;
+}
+
 export const jsonSuccess = (data = null, message = 'success') => {
   return JSON.stringify({
     code: 200,

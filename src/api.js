@@ -29,6 +29,7 @@ const build = (router) => {
       return await next();
     }
 
+    logger.debug(`doTask has been called.`);
     await next();
   });
   router.get('/getRecent', async (ctx, next) => {
@@ -38,6 +39,7 @@ const build = (router) => {
     }
     const recent = await getRecent(ctx.query.task);
     ctx.body = jsonSuccess(recent);
+    logger.debug(`getRecent has returned [${JSON.stringify(ctx.body)}].`);
     await next();
   });
 }

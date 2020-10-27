@@ -5,6 +5,7 @@ import config from './config';
 import mysql from './src/db';
 import loader from './src/loader';
 import logger from './src/logger';
+import requestFilter from './src/requestFilter';
 import buildApi from './src/api';
 
 // directory test
@@ -20,6 +21,7 @@ const router = new Router();
 
 app.use(mysql);
 app.use(loader);
+app.use(requestFilter);
 
 buildApi(router);
 
