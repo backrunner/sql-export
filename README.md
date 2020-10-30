@@ -75,11 +75,15 @@ Task will load at server startup, you can see some related logs in console.
 
 You can use API to execute export task by HTTP request:
 
+```
 /doTask?task=[YOUR_TASK]&sheet=[OPTIONAL_SHEET_PARAM]
+```
 
 And you can get recent export information by this:
 
+```
 /getRecent?task=[YOUR_TASK]&sheet=[OPTIONAL_SHEET_PARAM]
+```
 
 ## License
 
