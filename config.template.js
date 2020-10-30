@@ -9,7 +9,8 @@ export default {
   },
   schedule: {
     enable: true,
-    cron: '* 0 * * *',
+    cron: '0 0 * * *',
   },
-  localOnly: true,
+  localOnly: true,  // if this is true, API will reject any outside request.
+  output: 'C:/dataOutput', // set the output path.
 }
