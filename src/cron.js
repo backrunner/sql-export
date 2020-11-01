@@ -18,6 +18,9 @@ cron.schedule(cronStr, async () => {
       return;
     }
     logger.info(`[Cron] task ${key} starting...`);
+    if (typeof ctx.tasks[key].doClean === 'function') {
+      await ctx.tasks[key].doClean(ctx, config);
+    }
     await ctx.tasks[key].doCronJob(ctx);
     logger.info(`[Cron] task ${key} completed`);
   }
